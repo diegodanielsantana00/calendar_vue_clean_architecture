@@ -112,7 +112,15 @@ const saveContact = async () => {
     if (editableContact.value.id) {
       await contactRepository.update(editableContact.value as Contact);
     } else {
-      await contactRepository.add(editableContact.value);
+      const safeContact: Omit<Contact, 'id' | 'statusContactEnum'> = {
+        name: editableContact.value.name || '',
+        email: editableContact.value.email || '',
+        phone: editableContact.value.phone || '',
+        userId: editableContact.value.userId || ''
+      }
+
+      await contactRepository.add(safeContact)
+
     }
     isContactModalVisible.value = false;
     isLoading.value = true;
