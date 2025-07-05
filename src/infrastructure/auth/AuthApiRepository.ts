@@ -16,7 +16,7 @@ export class AuthApiRepository implements IAuthRepository {
     });
 
     console.log('Response status:', response.status);
-    const apiResponse: ApiResponse = await response.json();
+    const apiResponse: ApiResponse<any> = await response.json();
 
     if (apiResponse.success && apiResponse.data) {
       return {
@@ -40,7 +40,7 @@ export class AuthApiRepository implements IAuthRepository {
       body: JSON.stringify({ username, password, confirmPassword: confirmPassword, role: 'Membro', email }),
     });
 
-    const apiResponse: ApiResponse = await response.json();
+    const apiResponse: ApiResponse<any> = await response.json();
     if (apiResponse.success && apiResponse.data) {
       return true;
     } else {

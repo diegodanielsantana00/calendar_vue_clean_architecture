@@ -14,6 +14,7 @@ import Button from 'primevue/button'
 import ToastService from 'primevue/toastservice'
 import Toast from 'primevue/toast'
 import router from './router'
+import Chart from 'primevue/chart'
 
 const app = createApp(App)
 
@@ -25,5 +26,6 @@ app.component('InputText', InputText)
 app.component('Password', Password)
 app.component('Button', Button)
 app.component('Toast', Toast)
+app.component('Chart', Chart)
 
 app.mount('#app')

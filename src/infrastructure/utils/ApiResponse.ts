@@ -1,13 +1,6 @@
-export interface ApiResponse {
+export interface ApiResponse<T> {
   success: boolean;
-  data: {
-    token: string;
-    user: {
-      id: string;
-      userName: string;
-      email: string;
-    };
-  } | null;
+  data: T;
   message: string;
   statusCode: number;
   errors: string[];
