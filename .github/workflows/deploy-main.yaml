@@ -78,6 +78,6 @@ jobs:
             nvm use 21.7.1
             cd $DEPLOY_PATH
             npm install --force --production
-            PORT=8502 pm2 start npm --name 'calendar-test-blue' -- start || pm2 restart 'calendar-test-blue'
+            PORT=8101 pm2 start npm --name 'calendar-test-blue' -- start || pm2 restart 'calendar-test-blue'
             pm2 save
           "
