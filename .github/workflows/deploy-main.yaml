@@ -1,0 +1,83 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}
+          EOF
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Deploy to server
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+          echo "Conectando ao servidor..."
+          sshpass -p "$SERVER_PASSWORD" ssh -v -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "echo Conexão OK"
+
+          echo "Instalando NVM e Node.js no servidor..."
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
+            if ! command -v nvm &> /dev/null; then
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+            fi
+            export NVM_DIR=\"\$HOME/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"
+            nvm install 21.7.1
+            nvm alias default 21.7.1
+            echo 'export NVM_DIR=\"\$HOME/.nvm\"' >> ~/.bashrc
+            echo '[ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"' >> ~/.bashrc
+            echo 'nvm use 21.7.1' >> ~/.bashrc
+          "
+
+          echo "Parando aplicação existente (se houver)..."
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
+            pm2 delete calendar-test-blue || true
+          "
+
+          echo "Preparando diretório de deploy..."
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
+            rm -rf $DEPLOY_PATH &&
+            mkdir -p $DEPLOY_PATH
+          "
+
+          echo "Sincronizando arquivos..."
+          sshpass -p "$SERVER_PASSWORD" rsync -avz --delete-after --exclude 'node_modules' ./ $SERVER_USER@$SERVER_IP:$DEPLOY_PATH
+
+          echo "Instalando dependências e rodando aplicação no servidor..."
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
+            export NVM_DIR=\"\$HOME/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"
+            nvm use 21.7.1
+            cd $DEPLOY_PATH
+            npm install --force --production
+            PORT=8502 pm2 start npm --name 'calendar-test-blue' -- start || pm2 restart 'calendar-test-blue'
+            pm2 save
+          "
