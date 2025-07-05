@@ -4,7 +4,7 @@ import type { ApiResponse } from "../utils/ApiResponse";
 import { formatErrors } from "../utils/GlobalFunctions";
 
 export class AuthApiRepository implements IAuthRepository {
-  private readonly baseUrl = 'https://localhost:5001/Auth';
+  private readonly baseUrl = `${import.meta.env.VITE_BACKEND_URL}/Auth`;
 
   async login(username: string, password: string): Promise<User> {
     const response = await fetch(`${this.baseUrl}/login`, {

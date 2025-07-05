@@ -6,7 +6,7 @@ import { StatusContactEnum, type Contact } from "@/domain/entities/Contact";
 
 
 export class ContactApiRepository implements IContactRepository {
-  private readonly baseUrl = 'https://localhost:5001/Contact';
+  private readonly baseUrl = `${import.meta.env.VITE_BACKEND_URL}/Contact`;
 
   async getStats(): Promise<ContactStats[]> {
     const response = await fetch(`${this.baseUrl}/getStats`, {
