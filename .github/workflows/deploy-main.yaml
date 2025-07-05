@@ -53,8 +53,6 @@ jobs:
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass docker.io
           sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
             docker stop test-bluetechnology || true
             docker rm test-bluetechnology || true
