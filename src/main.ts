@@ -15,17 +15,21 @@ import ToastService from 'primevue/toastservice'
 import Toast from 'primevue/toast'
 import router from './router'
 import Chart from 'primevue/chart'
+import Menu from 'primevue/menu'
+import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp(App)
 
 app.use(router)
 app.use(PrimeVue)
 app.use(ToastService)
+app.use(ConfirmationService);
 
 app.component('InputText', InputText)
 app.component('Password', Password)
 app.component('Button', Button)
 app.component('Toast', Toast)
 app.component('Chart', Chart)
+app.component('Menu', Menu)
 
 app.mount('#app')

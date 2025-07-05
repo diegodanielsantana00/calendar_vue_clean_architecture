@@ -3,11 +3,14 @@ import type { RouteRecordRaw } from 'vue-router'
 import LoginPage from '@/presentation/pages/LoginPage.vue'
 import RegisterPage from '@/presentation/pages/RegisterPage.vue'
 import DashboardPage from '@/presentation/pages/DashboardPage.vue'
+import ContactPage from '@/presentation/pages/ContactPage.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'Login', component: LoginPage },
   { path: '/register', name: 'Register', component: RegisterPage },
-  { path: '/dashboard', name: 'Dashboard', component: DashboardPage }
+  { path: '/dashboard', name: 'Dashboard', component: DashboardPage },
+  { path: '/contacts', name: 'Contact', component: ContactPage },
+  
 ]
 
 const router = createRouter({
