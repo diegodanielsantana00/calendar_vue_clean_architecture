@@ -13,9 +13,11 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import ToastService from 'primevue/toastservice'
 import Toast from 'primevue/toast'
+import router from './router'
 
 const app = createApp(App)
 
+app.use(router)
 app.use(PrimeVue)
 app.use(ToastService)
 

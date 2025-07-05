@@ -14,7 +14,7 @@
 
       <div class="mb-3">
         <label for="password" class="block text-900 font-medium mb-2">Senha</label>
-        <Password v-model="password" id="password" class="w-full" toggleMask placeholder="Digite sua senha" />
+        <Password v-model="password" id="password" class="w-full" toggleMask placeholder="Digite sua senha" :feedback="false"/>
       </div>
 
       <Button label="Entrar" icon="pi pi-sign-in" class="w-full mb-3" @click="handleLogin" />
@@ -34,10 +34,12 @@ import { ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { LoginUseCase } from '@/application/login/LoginUseCase'
 import { AuthApiRepository } from '@/infrastructure/auth/AuthApiRepository'
+import { useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
 const toast = useToast()
+const router = useRouter()
 
 const loginUseCase = new LoginUseCase(new AuthApiRepository())
 
@@ -46,6 +48,7 @@ const handleLogin = async () => {
     const user = await loginUseCase.execute(username.value, password.value)
     toast.add({ severity: 'success', summary: 'Bem-vindo', detail: user.username, life: 3000 })
     localStorage.setItem('token', user.token)
+    router.push('/dashboard')
   } catch (error: any) {
     toast.add({ severity: 'error', summary: 'Erro', detail: error.message, life: 3000 })
   }
