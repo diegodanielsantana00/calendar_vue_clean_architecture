@@ -14,6 +14,15 @@ const items = ref([
         label: 'Contatos',
         icon: 'pi pi-users',
         command: () => router.push('/contacts')
+    },
+    {
+        label: 'Sair',
+        icon: 'pi pi-sign-out',
+        class: 'menu-item-logout', 
+        command: () => {
+            localStorage.removeItem('token')
+            router.push('/');
+        }
     }
 ]);
 </script>
